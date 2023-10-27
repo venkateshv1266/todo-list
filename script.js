@@ -13,16 +13,21 @@ document.addEventListener("DOMContentLoaded", function () {
     function createTaskElement(taskText, taskId) {
         const li = document.createElement("li");
         li.innerHTML = `
-            <span class="task-text ${tasks[taskId].completed ? 'completed' : ''}" id="task-${taskId}">${taskText}</span>
+            <span style="cursor:pointer;" class="task-text ${tasks[taskId].completed ? 'completed' : ''}" id="task-${taskId}" onclick="markCompleted(${taskId})">${taskText}</span>
             <span class="edit" onclick="editTask(${taskId})">Edit</span>
             <span class="delete" onclick="deleteTask(${taskId})">Delete</span>
         `;
+
         return li;
     }
 
     renderTasks();
 
-
+    window.markCompleted = function (taskId) {
+        tasks[taskId].completed = !tasks[taskId].completed;
+        updateLocalStorage();
+        renderTasks();
+    }
 
     function renderTasks() {
         taskList.innerHTML = "";
@@ -36,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
     addTaskButton.addEventListener("click", function () {
         const taskText = taskInput.value;
         if (taskText.trim() === "") return;
-        tasks.push({ text: taskText });
+        tasks.push({ text: taskText, completed: false });
         updateLocalStorage();
         taskInput.value = "";
         renderTasks();
